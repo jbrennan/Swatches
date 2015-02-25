@@ -3,6 +3,10 @@ var page     = doc.currentPage()
 var artboard = doc.currentPage().currentArtboard()
 var canvas   = artboard ? artboard : page
 
+var numberOfColumns = 5
+var cellWidth = 150
+var cellHeight = 280
+
 // Ask the user for color values
 var hexInput = doc.askForUserInput_initialValue("Please enter a sequence of hexadecimal values", "#91B6AF, #7D6962, #B96362, #FEE5C6, #E9CE97")
 
@@ -14,8 +18,8 @@ if (hexInput) {
         swatchesGroup.setName("Swatches - " + hexInput.length + " colors")
         swatchesGroup.frame().x = 0
         swatchesGroup.frame().y = 0
-        swatchesGroup.frame().width = hexInput.length * 150
-        swatchesGroup.frame().height = 180
+        swatchesGroup.frame().width = numberOfColumns * cellWidth
+        swatchesGroup.frame().height = Math.ceil(hexInput.length / numberOfColumns) * cellHeight
 
     // For each hex value
     for (_i = 0, _len = hexInput.length; _i < _len; _i++) {
@@ -24,16 +28,20 @@ if (hexInput) {
     }
 }
 
+
+
 // Create a swatch and add it to the swatches group
 function addSwatch(hexadecimal, count) {
+    
+    
     var colorValue = MSColor.colorWithSVGString(hexadecimal)
 
     var swatchGroup = swatchesGroup.addLayerOfType("group")
         swatchGroup.setName("Swatch: " + hexadecimal)
-        swatchGroup.frame().x = count * 150
-        swatchGroup.frame().y = 0
-        swatchGroup.frame().width = 150
-        swatchGroup.frame().height = 180
+        swatchGroup.frame().x = (count % numberOfColumns) * cellWidth
+        swatchGroup.frame().y = Math.floor(count / numberOfColumns) * cellHeight
+        swatchGroup.frame().width = cellWidth
+        swatchGroup.frame().height = cellHeight
 
     var colorBlock = swatchGroup.addLayerOfType("rectangle")
         colorBlock = colorBlock.embedInShapeGroup()
